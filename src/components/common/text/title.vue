@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-defineProps<{ type: 'h1' | 'h2' | 'h3', color: string }>();
+defineProps<{ type: 'h1' | 'h2' | 'h3'; color: string }>();
 </script>
 
 <template>
-  <component class="font-bold text-2xl" :class="color" :is="type">
+  <component :is="type" class="text-3xl font-bold" :class="color">
     <slot></slot>
   </component>
 </template>

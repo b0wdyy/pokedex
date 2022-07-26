@@ -5,6 +5,7 @@ import { svg } from '@/utils/svg';
 import { usePokemon } from '@/composables/use-pokemon';
 import Loader from '@/components/common/loader.vue';
 import PokemonCard from '@/components/pokemon/card.vue';
+import PokemonGroupButton from '@/components/pokemon/group-button.vue';
 import Input from '@/components/form/input.vue';
 import debounce from 'lodash.debounce';
 import { computed, ref } from 'vue';
@@ -16,8 +17,10 @@ const { replace } = useRouter();
 
 const filter = ref((query.q as string) || '');
 const filteredPokemon = computed(() => {
-  return pokemon.value.filter((pokemon) =>
-    pokemon.name.toLowerCase().includes(filter.value.toLowerCase())
+  return pokemon.value.filter(
+    (pokemon) =>
+      pokemon.name.toLowerCase().includes(filter.value.toLowerCase()) ||
+      pokemon.id.toString() === filter.value
   );
 });
 
@@ -49,6 +52,19 @@ const onChange = debounce((value: string) => {
       />
     </header>
 
+    <div class="mb-5 grid grid-cols-2 gap-2">
+      <pokemon-group-button
+        class="card__team"
+        title="Mijn team"
+        subtitle="4 pokemon"
+      />
+      <pokemon-group-button
+        class="card__favorites"
+        title="Favorieten"
+        subtitle="12 pokemon"
+      />
+    </div>
+
     <Loader :loading="loading" />
 
     <div v-if="!loading && !error" class="flex flex-col gap-4">
@@ -60,3 +76,12 @@ const onChange = debounce((value: string) => {
     </div>
   </Container>
 </template>
+
+<style>
+.card__team {
+  background: linear-gradient(109.73deg, #46469c 0%, #7e32e0 100%);
+}
+.card__favorites {
+  background: linear-gradient(109.73deg, #65cb9a 0%, #15d0dc 100%);
+}
+</style>
