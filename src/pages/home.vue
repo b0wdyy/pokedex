@@ -5,22 +5,26 @@ import { svg } from '@/utils/svg';
 import { usePokemon } from '@/composables/use-pokemon';
 import Loader from '@/components/common/loader.vue';
 import PokemonCard from '@/components/pokemon/card.vue';
-import PokemonGroupButton from '@/components/pokemon/group-button.vue';
+import PokemonGroupLink from '@/components/pokemon/group-link.vue';
 import Input from '@/components/form/input.vue';
 import debounce from 'lodash.debounce';
 import { computed, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { IPokemon } from '@/utils/interfaces/IPokemon';
 
-const { pokemon, loading, error } = usePokemon();
+const { pokemon, loading, error } = usePokemon<IPokemon[]>();
 const { query } = useRoute();
 const { replace } = useRouter();
 
 const filter = ref((query.q as string) || '');
 const filteredPokemon = computed(() => {
-  return pokemon.value.filter(
+  return pokemon.value?.filter(
     (pokemon) =>
       pokemon.name.toLowerCase().includes(filter.value.toLowerCase()) ||
-      pokemon.id.toString() === filter.value
+      pokemon.id.toString() === filter.value ||
+      pokemon.types.some((type) =>
+        type.type.name.toLowerCase().includes(filter.value.toLowerCase())
+      )
   );
 });
 
@@ -53,12 +57,14 @@ const onChange = debounce((value: string) => {
     </header>
 
     <div class="mb-5 grid grid-cols-2 gap-2">
-      <pokemon-group-button
+      <pokemon-group-link
+        to="/team"
         class="card__team"
         title="Mijn team"
         subtitle="4 pokemon"
       />
-      <pokemon-group-button
+      <pokemon-group-link
+        to="/favorites"
         class="card__favorites"
         title="Favorieten"
         subtitle="12 pokemon"
@@ -67,7 +73,7 @@ const onChange = debounce((value: string) => {
 
     <Loader :loading="loading" />
 
-    <div v-if="!loading && !error" class="flex flex-col gap-4">
+    <div v-if="!loading && !error" class="mb-4 flex flex-col gap-4">
       <pokemon-card
         v-for="mon in filteredPokemon"
         :key="mon.id"

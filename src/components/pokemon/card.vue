@@ -4,13 +4,15 @@ import Tag from '../form/tag.vue';
 import { svg } from '@/utils/svg';
 import { capitalize, getPokemonLabelColor } from '@/utils/helpers';
 
-defineProps<{
+const props = defineProps<{
   pokemon: IPokemon;
 }>();
+
+const to = `/pokemon/${props.pokemon.id}`;
 </script>
 
 <template>
-  <div class="card flex items-center">
+  <router-link :to="to" class="card flex items-center">
     <img
       class="h-14 w-14 object-cover"
       :src="pokemon.sprites.front_default"
@@ -39,7 +41,7 @@ defineProps<{
     </div>
 
     <div v-html="svg.chevronRight" />
-  </div>
+  </router-link>
 </template>
 
 <style>
