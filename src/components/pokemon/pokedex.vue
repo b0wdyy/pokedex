@@ -1,11 +1,25 @@
 <script lang="ts" setup>
 import { svg } from '@/utils/svg';
-import { ref } from 'vue';
-import { useRoute } from 'vue-router';
+import PokemonCard from '@/components/pokemon/card.vue';
+import PokemonGroupLink from '@/components/pokemon/group-link.vue';
+import Title from '@/components/common/text/title.vue';
+import Input from '@/components/form/input.vue';
+import Loader from '@/components/common/loader.vue';
+import { useRoute, useRouter } from 'vue-router';
+import debounce from 'lodash.debounce';
+import { usePokemon } from '@/composables/use-pokemon';
 
 const { query } = useRoute();
+const { replace } = useRouter();
+const { filteredPokemonList, loading } = usePokemon();
 
-const filter = ref((query.q as string) || '');
+const onChange = debounce(async (value: string) => {
+  await replace({
+    query: {
+      q: value || undefined,
+    },
+  });
+}, 500);
 </script>
 
 <template>
@@ -15,34 +29,47 @@ const filter = ref((query.q as string) || '');
   </div>
 
   <header class="mb-4">
-    <Title color="text-black" class="mb-2" type="h1">Pokédex</Title>
+    <Title class="mb-2" color="text-black" type="h1">Pokédex</Title>
     <Input
-      :value="filter"
+      :icon-left="svg.search"
+      :value="query.q || ''"
       placeholder="Pokemon zoeken"
       type="text"
-      :icon-left="svg.search"
       @onInputChange="onChange"
     />
   </header>
 
   <div class="mb-5 grid grid-cols-2 gap-2">
     <pokemon-group-link
-      to="/team"
       class="card__team"
-      title="Mijn team"
       subtitle="4 pokemon"
+      title="Mijn team"
+      to="/team"
     />
     <pokemon-group-link
-      to="/favorites"
       class="card__favorites"
-      title="Favorieten"
       subtitle="12 pokemon"
+      title="Favorieten"
+      to="/favorites"
     />
   </div>
 
   <Loader :loading="loading" />
 
-  <div v-if="!loading && !error" class="mb-4 flex flex-col gap-4">
-    <pokemon-card v-for="mon in filteredPokemon" :key="mon.id" :pokemon="mon" />
+  <div v-if="!loading" class="mb-4 flex flex-col gap-4">
+    <pokemon-card
+      v-for="pokemon in filteredPokemonList"
+      :key="pokemon.id"
+      :pokemon="pokemon"
+    />
   </div>
 </template>
+
+<style>
+.card__team {
+  background: linear-gradient(109.73deg, #46469c 0%, #7e32e0 100%);
+}
+.card__favorites {
+  background: linear-gradient(109.73deg, #65cb9a 0%, #15d0dc 100%);
+}
+</style>

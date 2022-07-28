@@ -1,25 +1,20 @@
-import { onMounted, ref } from 'vue';
-import axios from 'axios';
-import { BASE_URL_DETAIL, BASE_URL_LIST } from '@/utils/constants';
+import { onMounted } from 'vue';
+import { usePokemonStore } from '@/stores/PokemonStore';
+import { storeToRefs } from 'pinia';
 
-export function usePokemon<T>(id: null | number = null) {
-  const pokemon = ref<T>();
-  const loading = ref(false);
-  const error = ref<any>();
+export function usePokemon(id: null | number = null) {
+  const { loading, pokemon, filteredPokemonList } = storeToRefs(
+    usePokemonStore()
+  );
+  const { fetchPokemonList, fetchPokemonDetail } = usePokemonStore();
 
   onMounted(async () => {
-    loading.value = true;
-    try {
-      const response = id
-        ? await axios.get(`${BASE_URL_DETAIL}/${id}`)
-        : await axios.get(`${BASE_URL_LIST}`);
-      pokemon.value = response.data;
-    } catch (e) {
-      error.value = e;
-    } finally {
-      loading.value = false;
+    if (id) {
+      await fetchPokemonDetail(id);
+    } else {
+      await fetchPokemonList();
     }
   });
 
-  return { pokemon, loading, error };
+  return { pokemon, loading, filteredPokemonList };
 }

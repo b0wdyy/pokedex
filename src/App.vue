@@ -1,5 +1,8 @@
-<script setup lang="ts"></script>
+<script lang="ts" setup></script>
 
 <template>
-  <router-view></router-view>
+  <div>
+    <router-view name="Pokedex" />
+    <router-view></router-view>
+  </div>
 </template>
