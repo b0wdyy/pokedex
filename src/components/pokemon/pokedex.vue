@@ -9,9 +9,12 @@ import { useRoute, useRouter } from 'vue-router';
 import debounce from 'lodash.debounce';
 import { usePokemon } from '@/composables/use-pokemon';
 
+// TODO: render cards in chunks
+
 const { query } = useRoute();
 const { replace } = useRouter();
-const { filteredPokemonList, loading } = usePokemon();
+const { filteredPokemonList, loading, favoritesLength, teamLength } =
+  usePokemon();
 
 const onChange = debounce(async (value: string) => {
   await replace({
@@ -41,14 +44,14 @@ const onChange = debounce(async (value: string) => {
 
   <div class="mb-5 grid grid-cols-2 gap-2">
     <pokemon-group-link
+      :subtitle="`${teamLength} pokemon`"
       class="card__team"
-      subtitle="4 pokemon"
       title="Mijn team"
       to="/team"
     />
     <pokemon-group-link
+      :subtitle="`${favoritesLength} pokemon`"
       class="card__favorites"
-      subtitle="12 pokemon"
       title="Favorieten"
       to="/favorites"
     />

@@ -7,9 +7,11 @@ import Container from '@/components/common/container.vue';
 import PokemonDetailBox from '@/components/pokemon/detail-box.vue';
 import PokemonInfoLine from '@/components/pokemon/info-line.vue';
 import PokemonInfoLineStat from '@/components/pokemon/info-line-stat.vue';
+import ButtonPrimary from '@/components/common/button/primary.vue';
 import Tag from '@/components/common/tag.vue';
 import { capitalize, getPokemonLabelColor } from '@/utils/helpers';
 import { onBeforeUnmount, onMounted } from 'vue';
+import Loader from '@/components/common/loader.vue';
 
 onMounted(() => {
   document.body.style.background = '#7ECD8B';
@@ -20,20 +22,43 @@ onBeforeUnmount(() => {
 });
 
 const { params } = useRoute();
-const { pokemon, loading } = usePokemon(Number(params.id));
+const {
+  pokemon,
+  loading,
+  toggleFavoritePokemon,
+  toggleTeamPokemon,
+  isPokemonFavorite,
+  isPokemonInTeam,
+} = usePokemon(Number(params.id));
+
+const onFavoriteClick = () => {
+  toggleFavoritePokemon(pokemon.value);
+};
+
+const onAddToTeamClick = () => {
+  toggleTeamPokemon(pokemon.value);
+};
 
 // TODO: https://apexcharts.com/docs/chart-types/radar/
 </script>
 
 <template>
-  <Container v-if="!loading && Object.keys(pokemon).length" class="py-4">
+  <div v-if="loading" class="p-4">
+    <Loader :loading="loading" />
+  </div>
+
+  <Container v-else-if="Object.keys(pokemon).length" class="py-4">
     <header class="mb-3 flex items-center justify-between">
       <router-link :to="{ name: 'home' }" class="flex items-center">
         <ChevronLeftIcon class="h-8 w-8 text-white" />
         <p class="text-white">Terug</p>
       </router-link>
 
-      <HeartIcon class="h-8 w-8 text-white" />
+      <HeartIcon
+        :class="{ 'fill-white': isPokemonFavorite(pokemon) }"
+        class="h-8 w-8 text-white"
+        @click="onFavoriteClick"
+      />
     </header>
 
     <div>
@@ -41,7 +66,7 @@ const { pokemon, loading } = usePokemon(Number(params.id));
         {{ capitalize(pokemon.name) }}
       </h1>
 
-      <PokemonDetailBox class="mb-7" title="About">
+      <PokemonDetailBox class="mb-7" title="Info">
         <div class="flex flex-col gap-4">
           <PokemonInfoLine value-key="Type">
             <div class="flex gap-2">
@@ -86,6 +111,13 @@ const { pokemon, loading } = usePokemon(Number(params.id));
         </div>
       </PokemonDetailBox>
     </div>
+
+    <ButtonPrimary
+      class="fixed inset-x-4 bottom-8 w-auto"
+      @click="onAddToTeamClick"
+      >{{ isPokemonInTeam(pokemon) ? 'Verwijderen van' : 'Toevoegen aan' }} mijn
+      team</ButtonPrimary
+    >
   </Container>
 </template>
 

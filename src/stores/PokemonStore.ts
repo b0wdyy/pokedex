@@ -5,10 +5,32 @@ import { BASE_URL_DETAIL, BASE_URL_LIST } from '@/utils/constants';
 import axios from 'axios';
 import { useRoute } from 'vue-router';
 
+const togglePokemonInList = (
+  arrayElement: IPokemonDetail[],
+  pokemon: IPokemonDetail
+) => {
+  const index = arrayElement.findIndex((p) => p.id === pokemon.id);
+
+  if (index === -1) {
+    arrayElement.push(pokemon);
+  } else {
+    arrayElement.splice(index, 1);
+  }
+};
+
+const checkIfPokemonIsInList = (
+  arrayElement: IPokemonDetail[],
+  pokemon: IPokemonDetail
+) => {
+  return arrayElement.some((p) => p.id === pokemon.id);
+};
+
 export const usePokemonStore = defineStore('pokemon', {
   state: () => ({
     pokemon: {} as IPokemonDetail,
     pokemonList: [] as IPokemon[],
+    favoritePokemonList: [] as IPokemonDetail[],
+    teamPokemonList: [] as IPokemonDetail[],
     loading: false,
   }),
 
@@ -38,6 +60,18 @@ export const usePokemonStore = defineStore('pokemon', {
         this.loading = false;
       }
     },
+
+    toggleFavoritePokemon(pokemon: IPokemonDetail) {
+      togglePokemonInList(this.favoritePokemonList, pokemon);
+    },
+
+    toggleTeamPokemon(pokemon: IPokemonDetail) {
+      if (this.teamLength < 6) {
+        togglePokemonInList(this.teamPokemonList, pokemon);
+      } else {
+        alert('You can only have 6 pokemon in your team');
+      }
+    },
   },
 
   getters: {
@@ -54,6 +88,22 @@ export const usePokemonStore = defineStore('pokemon', {
           )
         );
       });
+    },
+    isPokemonFavorite(state) {
+      return (pokemon: IPokemonDetail) => {
+        return checkIfPokemonIsInList(state.favoritePokemonList, pokemon);
+      };
+    },
+    isPokemonInTeam(state) {
+      return (pokemon: IPokemonDetail) => {
+        return checkIfPokemonIsInList(state.teamPokemonList, pokemon);
+      };
+    },
+    teamLength(state) {
+      return state.teamPokemonList.length;
+    },
+    favoritesLength(state) {
+      return state.favoritePokemonList.length;
     },
   },
 });
