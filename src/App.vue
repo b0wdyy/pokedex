@@ -2,7 +2,6 @@
 import { useWindowSize } from '@/composables/use-window-size';
 
 const { width } = useWindowSize();
-console.log(width.value);
 </script>
 
 <template>

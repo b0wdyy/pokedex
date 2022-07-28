@@ -42,10 +42,8 @@ export const usePokemonStore = defineStore('pokemon', {
 
   getters: {
     filteredPokemonList(state) {
-      const {
-        query: { q },
-      } = useRoute();
-      const filter = (q as string) || '';
+      const route = useRoute();
+      const filter = (route?.query?.q as string) ?? '';
 
       return state.pokemonList.filter((pokemon) => {
         return (

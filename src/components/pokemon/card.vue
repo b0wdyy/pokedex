@@ -12,11 +12,11 @@ const to = `/pokemon/${props.pokemon.id}`;
 </script>
 
 <template>
-  <router-link :to="to" class="card flex items-center">
+  <router-link :to="to" class="card flex items-center bg-white">
     <img
-      class="h-14 w-14 object-cover"
-      :src="pokemon.sprites.front_default"
       :alt="`picture of ${pokemon.name}`"
+      :src="pokemon.sprites.front_default"
+      class="h-14 w-14 object-cover"
     />
 
     <div class="flex w-full items-start">

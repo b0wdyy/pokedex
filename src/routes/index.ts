@@ -8,7 +8,7 @@ import { favoritesRoutes } from '@/routes/favorites';
 export const router = createRouter({
   history: createWebHistory(),
   routes: [
-    { path: '/', component: Home },
+    { path: '/', component: Home, name: 'home' },
     ...teamRoutes,
     ...favoritesRoutes,
     ...pokemonRoutes,
