@@ -5,7 +5,10 @@ import { ChevronLeftIcon } from '@heroicons/vue/solid';
 import { HeartIcon } from '@heroicons/vue/outline';
 import Container from '@/components/common/container.vue';
 import PokemonDetailBox from '@/components/pokemon/detail-box.vue';
-import { capitalize } from '@/utils/helpers';
+import PokemonInfoLine from '@/components/pokemon/info-line.vue';
+import PokemonInfoLineStat from '@/components/pokemon/info-line-stat.vue';
+import Tag from '@/components/common/tag.vue';
+import { capitalize, getPokemonLabelColor } from '@/utils/helpers';
 import { onBeforeUnmount, onMounted } from 'vue';
 
 onMounted(() => {
@@ -18,10 +21,12 @@ onBeforeUnmount(() => {
 
 const { params } = useRoute();
 const { pokemon, loading } = usePokemon(Number(params.id));
+
+// TODO: https://apexcharts.com/docs/chart-types/radar/
 </script>
 
 <template>
-  <Container v-if="!loading && pokemon" class="py-4">
+  <Container v-if="!loading && Object.keys(pokemon).length" class="py-4">
     <header class="mb-3 flex items-center justify-between">
       <router-link :to="{ name: 'home' }" class="flex items-center">
         <ChevronLeftIcon class="h-8 w-8 text-white" />
@@ -36,8 +41,49 @@ const { pokemon, loading } = usePokemon(Number(params.id));
         {{ capitalize(pokemon.name) }}
       </h1>
 
-      <PokemonDetailBox title="About">
-        <p>hoi</p>
+      <PokemonDetailBox class="mb-7" title="About">
+        <div class="flex flex-col gap-4">
+          <PokemonInfoLine value-key="Type">
+            <div class="flex gap-2">
+              <Tag
+                v-for="type in pokemon.types"
+                :key="type.slot"
+                :style="{
+                  backgroundColor: getPokemonLabelColor(type.type.name),
+                }"
+              >
+                {{ capitalize(type.type.name) }}
+              </Tag>
+            </div>
+          </PokemonInfoLine>
+
+          <PokemonInfoLine value-key="Nummer">
+            {{ pokemon.id.toString().padStart(3, '0') }}
+          </PokemonInfoLine>
+
+          <PokemonInfoLine value-key="Hoogte">
+            {{ pokemon.height / 10 }} m
+          </PokemonInfoLine>
+
+          <PokemonInfoLine value-key="Gewicht">
+            {{ pokemon.weight / 10 }} kg
+          </PokemonInfoLine>
+
+          <PokemonInfoLine value-key="Vaardigheden">
+            {{ pokemon.abilities.map((a) => a.ability.name).join(', ') }}
+          </PokemonInfoLine>
+        </div>
+      </PokemonDetailBox>
+
+      <PokemonDetailBox title="Statistieken">
+        <div class="flex flex-col gap-2">
+          <PokemonInfoLineStat
+            v-for="stat in pokemon.stats"
+            :key="stat.stat.name"
+            :stat="stat.base_stat"
+            :value-key="stat.stat.name"
+          />
+        </div>
       </PokemonDetailBox>
     </div>
   </Container>

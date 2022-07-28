@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { IPokemon } from '@/utils/interfaces/IPokemon';
-import Tag from '../form/tag.vue';
+import Tag from '../common/tag.vue';
 import { svg } from '@/utils/svg';
 import { capitalize, getPokemonLabelColor } from '@/utils/helpers';
 
@@ -28,7 +28,7 @@ const to = `/pokemon/${props.pokemon.id}`;
       </div>
 
       <div class="flex gap-2">
-        <tag
+        <Tag
           v-for="type in pokemon.types"
           :key="type.slot"
           :style="{
@@ -36,7 +36,7 @@ const to = `/pokemon/${props.pokemon.id}`;
           }"
         >
           {{ capitalize(type.type.name) }}
-        </tag>
+        </Tag>
       </div>
     </div>
 
