@@ -44,6 +44,7 @@ const sortPokemonList = (a: IPokemon, b: IPokemon, sort: SortTypes) => {
 export const usePokemonStore = defineStore('pokemon', {
   state: () => ({
     pokemon: {} as IPokemonDetail,
+    evolutions: [] as IPokemonDetail[],
     pokemonList: [] as IPokemon[],
     favoritePokemonList: [] as IPokemonDetail[],
     teamPokemonList: [] as IPokemonDetail[],
@@ -68,8 +69,13 @@ export const usePokemonStore = defineStore('pokemon', {
       this.loading = true;
 
       try {
-        const { data } = await axios.get(`${BASE_URL_DETAIL}/${id}`);
+        const { data } = await axios.get(`${BASE_URL_DETAIL}/pokemon/${id}`);
         this.pokemon = data;
+        const { data: species } = await axios.get(this.pokemon.species.url);
+        const { data: evolutions } = await axios.get(
+          species.evolution_chain.url
+        );
+        console.log(evolutions);
       } catch (e) {
         console.error({ error: e });
       } finally {

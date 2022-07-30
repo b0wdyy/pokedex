@@ -16,8 +16,10 @@ export function usePokemon(id: null | number = null) {
     filteredPokemonList,
   } = storeToRefs(usePokemonStore());
   const {
+    evolutions,
     fetchPokemonList,
     fetchPokemonDetail,
+    fetchEvolutions,
     toggleFavoritePokemon,
     toggleTeamPokemon,
   } = usePokemonStore();
@@ -40,6 +42,7 @@ export function usePokemon(id: null | number = null) {
     favoritePokemonList,
     teamPokemonList,
     pokemonList,
+    evolutions,
     favoritesLength,
     teamLength,
     filteredPokemonList,

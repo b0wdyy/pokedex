@@ -2,7 +2,7 @@ import { svg } from '@/utils/svg';
 
 export const BASE_URL_LIST =
   'https://stoplight.io/mocks/appwise-be/pokemon/57519009/pokemon';
-export const BASE_URL_DETAIL = 'https://pokeapi.co/api/v2/pokemon';
+export const BASE_URL_DETAIL = 'https://pokeapi.co/api/v2';
 
 export const POKEMONCOLORS = {
   normal: '#A3ACAE',
