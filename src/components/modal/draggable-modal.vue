@@ -1,11 +1,19 @@
 <script lang="ts" setup>
 import { XCircleIcon } from '@heroicons/vue/solid';
 import ButtonPrimary from '@/components/common/button/primary.vue';
-import { ref } from 'vue';
-import { useDrag } from '@vueuse/gesture';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
+import { useDrag, useGesture } from '@vueuse/gesture';
 import { useMotion } from '@vueuse/motion';
 
 const Y_OFFSET_VALUE = 50;
+
+onMounted(() => {
+  document.body.style.overflow = 'hidden';
+});
+
+onBeforeUnmount(() => {
+  document.body.style.overflow = '';
+});
 
 const emit = defineEmits<{
   (e: 'onClose'): void;
@@ -16,6 +24,15 @@ defineProps<{
 }>();
 
 const element = ref<HTMLElement>();
+const touchesY = ref(0);
+
+const shouldNotDrag = () => {
+  if (!element.value) {
+    return false;
+  }
+
+  return touchesY.value !== 0 && touchesY.value > element.value?.offsetTop + 80;
+};
 
 const onSubmitClick = () => {
   emit('onSubmitClick');
@@ -33,19 +50,23 @@ const dragHandler = ({
   movement: number[];
   dragging: boolean;
 }) => {
+  if (!element.value) {
+    return;
+  }
+
   if (dragging) {
-    if (y < 0) {
-      // prevent dragging up
+    if (shouldNotDrag()) {
       return;
     }
 
-    if (element.value) {
-      element.value.style.transform = `translate3d(0, ${y}px, 0)`;
-    }
-    // prevent unnecessary body scrolling
-    document.body.style.overflow = 'hidden';
+    if (y < 0) return;
+
+    element.value.style.transform = `translate3d(0, ${y}px, 0)`;
   } else {
     if (element.value) {
+      if (shouldNotDrag()) {
+        return;
+      }
       if (y > Y_OFFSET_VALUE) {
         // add this to add a transition when closing this
         element.value?.classList.add('transition-all');
@@ -60,14 +81,13 @@ const dragHandler = ({
         element.value.style.transform = `translate3d(0, 0, 0)`;
       }
     }
-    document.body.style.overflow = '';
   }
 };
 
 useDrag(dragHandler, {
   domTarget: element,
+  useTouch: true,
 });
-
 useMotion(element, {
   initial: {
     y: -400,
@@ -76,6 +96,21 @@ useMotion(element, {
     y: 0,
   },
 });
+useGesture(
+  {
+    onTouchstart: ({ event }) => {
+      // @ts-ignore
+      if (event.targetTouches) {
+        // @ts-ignore
+        const [touches] = event.targetTouches;
+        touchesY.value = touches.clientY;
+      }
+    },
+  },
+  {
+    domTarget: element,
+  }
+);
 </script>
 
 <template>
@@ -96,13 +131,13 @@ useMotion(element, {
         @click="onClose"
       />
 
-      <h3 class="text-xl font-bold">{{ title }}</h3>
+      <h3 class="pb-4 text-xl font-bold">{{ title }}</h3>
 
-      <div class="my-4 flex-1 overflow-y-auto">
+      <div class="flex-1 overflow-y-auto">
         <slot></slot>
       </div>
 
-      <ButtonPrimary class="w-full" @click="onSubmitClick"
+      <ButtonPrimary class="mt-4 w-full" @click="onSubmitClick"
         >Toepassen</ButtonPrimary
       >
     </div>

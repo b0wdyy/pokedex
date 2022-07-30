@@ -10,6 +10,7 @@ import debounce from 'lodash.debounce';
 import { usePokemon } from '@/composables/use-pokemon';
 import DraggableModal from '@/components/modal/draggable-modal.vue';
 import { ref } from 'vue';
+import { SORT_VALUES } from '@/utils/constants';
 
 // TODO: render cards in chunks
 
@@ -87,9 +88,22 @@ const changeSort = () => {
         @onClose="sortModalOpen = false"
         @onSubmitClick="changeSort"
       >
-        <ul>
-          <li></li>
-        </ul>
+        <div class="flex flex-col gap-2">
+          <button
+            v-for="sortValue in SORT_VALUES"
+            :key="sortValue.value"
+            class="flex w-full items-center rounded-lg border border-emerald-200 bg-gray-100 p-2 px-4"
+            @click="onSortClick(sortValue.value)"
+          >
+            <span class="mr-2 inline-block" v-html="sortValue.icon"></span>
+
+            <span>
+              {{ sortValue.title }}
+            </span>
+
+            <span></span>
+          </button>
+        </div>
       </draggable-modal>
     </transition>
   </div>

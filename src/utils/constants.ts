@@ -1,3 +1,5 @@
+import { svg } from '@/utils/svg';
+
 export const BASE_URL_LIST =
   'https://stoplight.io/mocks/appwise-be/pokemon/57519009/pokemon';
 export const BASE_URL_DETAIL = 'https://pokeapi.co/api/v2/pokemon';
@@ -31,3 +33,26 @@ export const STATS_TRANSLATION_KEYS = {
   'special-defense': 'Sp. Def',
   speed: 'Speed',
 };
+
+export const SORT_VALUES = [
+  {
+    title: 'Alfabetisch oplopend',
+    icon: svg.sortAlphabeticalAscending,
+    value: 'ALPHA_ASC',
+  },
+  {
+    title: 'Alfabetisch aflopen',
+    icon: svg.sortAlphabeticalDescending,
+    value: 'ALPHA_DESC',
+  },
+  {
+    title: 'Numeriek oplopend',
+    icon: svg.sortNumericalAscending,
+    value: 'NUM_ASC',
+  },
+  {
+    title: 'Numeriek aflopend',
+    icon: svg.sortNumericalDescending,
+    value: 'NUM_DESC',
+  },
+];
