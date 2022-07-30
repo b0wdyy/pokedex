@@ -11,6 +11,7 @@ import { usePokemon } from '@/composables/use-pokemon';
 import DraggableModal from '@/components/modal/draggable-modal.vue';
 import { ref } from 'vue';
 import { SORT_VALUES } from '@/utils/constants';
+import { SortTypes } from '@/utils/types/SortTypes';
 
 // TODO: render cards in chunks
 
@@ -23,6 +24,7 @@ const sortModalOpen = ref(false);
 const onChange = debounce(async (value: string) => {
   await replace({
     query: {
+      ...query,
       q: value || undefined,
     },
   });
@@ -34,6 +36,15 @@ const onSortClick = () => {
 
 const changeSort = () => {
   console.log('sortChange');
+};
+
+const onSortChangeClick = (value: SortTypes) => {
+  replace({
+    query: {
+      ...query,
+      sort: value,
+    },
+  });
 };
 </script>
 
@@ -93,7 +104,7 @@ const changeSort = () => {
             v-for="sortValue in SORT_VALUES"
             :key="sortValue.value"
             class="flex w-full items-center rounded-lg border border-emerald-200 bg-gray-100 p-2 px-4"
-            @click="onSortClick(sortValue.value)"
+            @click="onSortChangeClick(sortValue.value)"
           >
             <span class="mr-2 inline-block" v-html="sortValue.icon"></span>
 

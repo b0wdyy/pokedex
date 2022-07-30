@@ -78,16 +78,32 @@ export const usePokemonStore = defineStore('pokemon', {
     filteredPokemonList(state) {
       const route = useRoute();
       const filter = (route?.query?.q as string) ?? '';
+      const sort = (route?.query?.sort as string) ?? 'ALPHA_ASC';
 
-      return state.pokemonList.filter((pokemon) => {
-        return (
-          pokemon.name.toLowerCase().includes(filter.toLowerCase()) ||
-          pokemon.id.toString() === filter ||
-          pokemon.types.some((type) =>
-            type.type.name.toLowerCase().includes(filter.toLowerCase())
-          )
-        );
-      });
+      return state.pokemonList
+        .filter((pokemon) => {
+          return (
+            pokemon.name.toLowerCase().includes(filter.toLowerCase()) ||
+            pokemon.id.toString() === filter ||
+            pokemon.types.some((type) =>
+              type.type.name.toLowerCase().includes(filter.toLowerCase())
+            )
+          );
+        })
+        .sort((a, b) => {
+          switch (sort) {
+            case 'ALPHA_ASC':
+              return a.name.localeCompare(b.name);
+            case 'ALPHA_DESC':
+              return b.name.localeCompare(a.name);
+            case 'NUM_ASC':
+              return a.id - b.id;
+            case 'NUM_DESC':
+              return b.id - a.id;
+            default:
+              return a.name.localeCompare(b.name);
+          }
+        });
     },
     isPokemonFavorite(state) {
       return (pokemon: IPokemonDetail) => {
