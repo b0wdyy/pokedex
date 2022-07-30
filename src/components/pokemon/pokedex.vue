@@ -8,6 +8,8 @@ import Loader from '@/components/common/loader.vue';
 import { useRoute, useRouter } from 'vue-router';
 import debounce from 'lodash.debounce';
 import { usePokemon } from '@/composables/use-pokemon';
+import DraggableModal from '@/components/modal/draggable-modal.vue';
+import { ref } from 'vue';
 
 // TODO: render cards in chunks
 
@@ -15,6 +17,7 @@ const { query } = useRoute();
 const { replace } = useRouter();
 const { filteredPokemonList, loading, favoritesLength, teamLength } =
   usePokemon();
+const sortModalOpen = ref(false);
 
 const onChange = debounce(async (value: string) => {
   await replace({
@@ -23,12 +26,20 @@ const onChange = debounce(async (value: string) => {
     },
   });
 }, 500);
+
+const onSortClick = () => {
+  sortModalOpen.value = true;
+};
+
+const changeSort = () => {
+  console.log('sortChange');
+};
 </script>
 
 <template>
   <div class="my-4 flex items-center justify-end gap-2">
     <button v-html="svg.filter"></button>
-    <button v-html="svg.sort"></button>
+    <button @click="onSortClick" v-html="svg.sort"></button>
   </div>
 
   <header class="mb-4">
@@ -59,12 +70,28 @@ const onChange = debounce(async (value: string) => {
 
   <Loader :loading="loading" />
 
-  <div v-if="!loading" class="mb-4 flex flex-col gap-4">
+  <div
+    v-if="!loading && filteredPokemonList.length"
+    class="mb-4 flex flex-col gap-4"
+  >
     <pokemon-card
       v-for="pokemon in filteredPokemonList"
       :key="pokemon.id"
       :pokemon="pokemon"
     />
+
+    <transition name="fade">
+      <draggable-modal
+        v-if="sortModalOpen"
+        title="Sorteren op"
+        @onClose="sortModalOpen = false"
+        @onSubmitClick="changeSort"
+      >
+        <ul>
+          <li></li>
+        </ul>
+      </draggable-modal>
+    </transition>
   </div>
 </template>
 

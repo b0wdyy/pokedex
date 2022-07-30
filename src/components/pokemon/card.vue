@@ -3,16 +3,22 @@ import { IPokemon } from '@/utils/interfaces/IPokemon';
 import Tag from '../common/tag.vue';
 import { svg } from '@/utils/svg';
 import { capitalize, getPokemonLabelColor } from '@/utils/helpers';
+import { onMounted } from 'vue';
 
-const props = defineProps<{
+defineProps<{
   pokemon: IPokemon;
 }>();
 
-const to = `/pokemon/${props.pokemon.id}`;
+onMounted(() => {
+  console.log('mount pokemon card');
+});
 </script>
 
 <template>
-  <router-link :to="to" class="card flex items-center bg-white">
+  <router-link
+    :to="`/pokemon/${pokemon.id}`"
+    class="card flex items-center bg-white"
+  >
     <img
       :alt="`picture of ${pokemon.name}`"
       :src="pokemon.sprites.front_default"
