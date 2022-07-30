@@ -66,6 +66,31 @@ const onAddToTeamClick = () => {
         {{ capitalize(pokemon.name) }}
       </h1>
 
+      <section
+        class="relative flex w-full snap-x snap-mandatory gap-6 overflow-x-auto"
+      >
+        <img
+          :alt="`front of ${pokemon.name}`"
+          :src="pokemon.sprites.front_default"
+          class="w-80 shrink-0 snap-center"
+        />
+        <img
+          :alt="`back of ${pokemon.name}`"
+          :src="pokemon.sprites.back_default"
+          class="w-80 shrink-0 snap-center"
+        />
+        <img
+          :alt="`front shiny of ${pokemon.name}`"
+          :src="pokemon.sprites.front_shiny"
+          class="w-80 shrink-0 snap-center"
+        />
+        <img
+          :alt="`back shiny of ${pokemon.name}`"
+          :src="pokemon.sprites.back_shiny"
+          class="w-80 shrink-0 snap-center"
+        />
+      </section>
+
       <PokemonDetailBox class="mb-7" title="Info">
         <div class="flex flex-col gap-4">
           <PokemonInfoLine value-key="Type">

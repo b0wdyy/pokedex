@@ -10,10 +10,10 @@ defineProps<{ loading: boolean }>();
     >
       <div class="relative grid place-items-center">
         <div
-          class="ani absolute h-6 w-6 animate-ping rounded-full border-2 border-slate-800 bg-white"
+          class="ani absolute h-6 w-6 animate-ping rounded-full border-2 border-slate-800"
         ></div>
         <div
-          class="animation-delay-150 h-3 w-3 animate-ping rounded-full border-2 border-slate-800 bg-white"
+          class="animation-delay-150 h-3 w-3 animate-ping rounded-full border-2 border-slate-800"
         ></div>
       </div>
     </div>

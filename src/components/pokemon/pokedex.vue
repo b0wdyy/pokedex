@@ -12,6 +12,7 @@ import DraggableModal from '@/components/modal/draggable-modal.vue';
 import { ref } from 'vue';
 import { SORT_VALUES } from '@/utils/constants';
 import { SortTypes } from '@/utils/types/SortTypes';
+import { CheckIcon } from '@heroicons/vue/solid';
 
 // TODO: render cards in chunks
 
@@ -19,7 +20,9 @@ const { query } = useRoute();
 const { replace } = useRouter();
 const { filteredPokemonList, loading, favoritesLength, teamLength } =
   usePokemon();
+
 const sortModalOpen = ref(false);
+const sort = ref(query.sort ?? '');
 
 const onChange = debounce(async (value: string) => {
   await replace({
@@ -39,6 +42,8 @@ const changeSort = () => {
 };
 
 const onSortChangeClick = (value: SortTypes) => {
+  sort.value = value;
+
   replace({
     query: {
       ...query,
@@ -103,16 +108,26 @@ const onSortChangeClick = (value: SortTypes) => {
           <button
             v-for="sortValue in SORT_VALUES"
             :key="sortValue.value"
-            class="flex w-full items-center rounded-lg border border-emerald-200 bg-gray-100 p-2 px-4"
+            :class="{
+              'border-2 border-emerald-400': sortValue.value === sort,
+            }"
+            class="flex w-full items-center justify-between rounded-lg bg-gray-100 p-2 px-4 transition-all"
             @click="onSortChangeClick(sortValue.value)"
           >
-            <span class="mr-2 inline-block" v-html="sortValue.icon"></span>
-
             <span>
-              {{ sortValue.title }}
+              <span class="mr-2 inline-block" v-html="sortValue.icon"></span>
+
+              <span>
+                {{ sortValue.title }}
+              </span>
             </span>
 
-            <span></span>
+            <transition name="fade">
+              <CheckIcon
+                v-if="sortValue.value === sort"
+                class="h-6 w-6 text-emerald-400"
+              />
+            </transition>
           </button>
         </div>
       </draggable-modal>

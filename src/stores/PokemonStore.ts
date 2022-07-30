@@ -4,6 +4,7 @@ import { IPokemonDetail } from '@/utils/interfaces/IPokemonDetail';
 import { BASE_URL_DETAIL, BASE_URL_LIST } from '@/utils/constants';
 import axios from 'axios';
 import { useRoute } from 'vue-router';
+import { SortTypes } from '@/utils/types/SortTypes';
 
 const togglePokemonInList = (
   arrayElement: IPokemonDetail[],
@@ -23,6 +24,21 @@ const checkIfPokemonIsInList = (
   pokemon: IPokemonDetail
 ) => {
   return arrayElement.some((p) => p.id === pokemon.id);
+};
+
+const sortPokemonList = (a: IPokemon, b: IPokemon, sort: SortTypes) => {
+  switch (sort) {
+    case 'ALPHA_ASC':
+      return a.name.localeCompare(b.name);
+    case 'ALPHA_DESC':
+      return b.name.localeCompare(a.name);
+    case 'NUM_ASC':
+      return a.id - b.id;
+    case 'NUM_DESC':
+      return b.id - a.id;
+    default:
+      return a.id - b.id;
+  }
 };
 
 export const usePokemonStore = defineStore('pokemon', {
@@ -78,9 +94,11 @@ export const usePokemonStore = defineStore('pokemon', {
     filteredPokemonList(state) {
       const route = useRoute();
       const filter = (route?.query?.q as string) ?? '';
-      const sort = (route?.query?.sort as string) ?? 'ALPHA_ASC';
+      const sort = (route?.query?.sort as SortTypes) ?? 'NUM_ASC';
+      console.log(filter);
 
       return state.pokemonList
+        .sort((a, b) => sortPokemonList(a, b, sort))
         .filter((pokemon) => {
           return (
             pokemon.name.toLowerCase().includes(filter.toLowerCase()) ||
@@ -89,20 +107,6 @@ export const usePokemonStore = defineStore('pokemon', {
               type.type.name.toLowerCase().includes(filter.toLowerCase())
             )
           );
-        })
-        .sort((a, b) => {
-          switch (sort) {
-            case 'ALPHA_ASC':
-              return a.name.localeCompare(b.name);
-            case 'ALPHA_DESC':
-              return b.name.localeCompare(a.name);
-            case 'NUM_ASC':
-              return a.id - b.id;
-            case 'NUM_DESC':
-              return b.id - a.id;
-            default:
-              return a.name.localeCompare(b.name);
-          }
         });
     },
     isPokemonFavorite(state) {
