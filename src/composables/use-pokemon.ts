@@ -4,11 +4,12 @@ import { storeToRefs } from 'pinia';
 
 export function usePokemon(id: null | number = null) {
   const {
-    loading,
     pokemon,
     pokemonList,
     favoritePokemonList,
     teamPokemonList,
+    loading,
+    evolutions,
     favoritesLength,
     teamLength,
     isPokemonFavorite,
@@ -16,10 +17,8 @@ export function usePokemon(id: null | number = null) {
     filteredPokemonList,
   } = storeToRefs(usePokemonStore());
   const {
-    evolutions,
     fetchPokemonList,
     fetchPokemonDetail,
-    fetchEvolutions,
     toggleFavoritePokemon,
     toggleTeamPokemon,
   } = usePokemonStore();

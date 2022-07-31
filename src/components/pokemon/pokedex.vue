@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { svg } from '@/utils/svg';
-import PokemonCard from '@/components/pokemon/card.vue';
 import PokemonGroupLink from '@/components/pokemon/group-link.vue';
+import PokemonCard from '@/components/pokemon/card.vue';
 import Title from '@/components/common/text/title.vue';
 import Input from '@/components/form/input.vue';
 import Loader from '@/components/common/loader.vue';
@@ -13,8 +13,6 @@ import { ref } from 'vue';
 import { SORT_VALUES } from '@/utils/constants';
 import { SortTypes } from '@/utils/types/SortTypes';
 import { CheckIcon } from '@heroicons/vue/solid';
-
-// TODO: render cards in chunks
 
 const { query } = useRoute();
 const { replace } = useRouter();
@@ -71,13 +69,13 @@ const onSortChangeClick = (value: SortTypes) => {
   </header>
 
   <div class="mb-5 grid grid-cols-2 gap-2">
-    <pokemon-group-link
+    <PokemonGroupLink
       :subtitle="`${teamLength} pokemon`"
       class="card__team"
       title="Mijn team"
       to="/team"
     />
-    <pokemon-group-link
+    <PokemonGroupLink
       :subtitle="`${favoritesLength} pokemon`"
       class="card__favorites"
       title="Favorieten"
@@ -91,14 +89,14 @@ const onSortChangeClick = (value: SortTypes) => {
     v-if="!loading && filteredPokemonList.length"
     class="mb-4 flex flex-col gap-4"
   >
-    <pokemon-card
+    <PokemonCard
       v-for="pokemon in filteredPokemonList"
       :key="pokemon.id"
       :pokemon="pokemon"
     />
 
     <transition name="fade">
-      <draggable-modal
+      <DraggableModal
         v-if="sortModalOpen"
         title="Sorteren op"
         @onClose="sortModalOpen = false"
@@ -130,7 +128,7 @@ const onSortChangeClick = (value: SortTypes) => {
             </transition>
           </button>
         </div>
-      </draggable-modal>
+      </DraggableModal>
     </transition>
   </div>
 </template>

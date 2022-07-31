@@ -5,6 +5,7 @@ import { BASE_URL_DETAIL, BASE_URL_LIST } from '@/utils/constants';
 import axios from 'axios';
 import { useRoute } from 'vue-router';
 import { SortTypes } from '@/utils/types/SortTypes';
+import { IChain } from '@/utils/interfaces/IEvolutionChain';
 
 const togglePokemonInList = (
   arrayElement: IPokemonDetail[],
@@ -41,10 +42,37 @@ const sortPokemonList = (a: IPokemon, b: IPokemon, sort: SortTypes) => {
   }
 };
 
+const getEvolutionList = async (evolutionChain: IChain) => {
+  const evolutionList: any[] = [];
+
+  const addEvolution = async (evolution: IChain) => {
+    const { data } = await axios.get(evolution.species.url);
+    const { data: pokemon } = await axios.get(
+      `${BASE_URL_DETAIL}/pokemon/${data.id}`
+    );
+    evolutionList.push({
+      id: pokemon.id,
+      name: pokemon.name,
+      types: pokemon.types,
+      sprites: { front_default: pokemon.sprites.front_default },
+    });
+
+    if (evolution.evolves_to) {
+      for (let i = 0; i < evolution.evolves_to.length; i++) {
+        await addEvolution(evolution.evolves_to[i]);
+      }
+    }
+  };
+
+  await addEvolution(evolutionChain);
+
+  return evolutionList;
+};
+
 export const usePokemonStore = defineStore('pokemon', {
   state: () => ({
     pokemon: {} as IPokemonDetail,
-    evolutions: [] as IPokemonDetail[],
+    evolutions: [] as IPokemon[],
     pokemonList: [] as IPokemon[],
     favoritePokemonList: [] as IPokemonDetail[],
     teamPokemonList: [] as IPokemonDetail[],
@@ -69,13 +97,16 @@ export const usePokemonStore = defineStore('pokemon', {
       this.loading = true;
 
       try {
-        const { data } = await axios.get(`${BASE_URL_DETAIL}/pokemon/${id}`);
-        this.pokemon = data;
-        const { data: species } = await axios.get(this.pokemon.species.url);
+        const { data: pokemon } = await axios.get(
+          `${BASE_URL_DETAIL}/pokemon/${id}`
+        );
+        const { data: species } = await axios.get(pokemon.species.url);
         const { data: evolutions } = await axios.get(
           species.evolution_chain.url
         );
-        console.log(evolutions);
+
+        this.evolutions = await getEvolutionList(evolutions.chain);
+        this.pokemon = pokemon;
       } catch (e) {
         console.error({ error: e });
       } finally {
@@ -101,10 +132,8 @@ export const usePokemonStore = defineStore('pokemon', {
       const route = useRoute();
       const filter = (route?.query?.q as string) ?? '';
       const sort = (route?.query?.sort as SortTypes) ?? 'NUM_ASC';
-      console.log(filter);
 
       return state.pokemonList
-        .sort((a, b) => sortPokemonList(a, b, sort))
         .filter((pokemon) => {
           return (
             pokemon.name.toLowerCase().includes(filter.toLowerCase()) ||
@@ -113,7 +142,8 @@ export const usePokemonStore = defineStore('pokemon', {
               type.type.name.toLowerCase().includes(filter.toLowerCase())
             )
           );
-        });
+        })
+        .sort((a, b) => sortPokemonList(a, b, sort));
     },
     isPokemonFavorite(state) {
       return (pokemon: IPokemonDetail) => {

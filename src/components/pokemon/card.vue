@@ -3,15 +3,10 @@ import { IPokemon } from '@/utils/interfaces/IPokemon';
 import Tag from '../common/tag.vue';
 import { svg } from '@/utils/svg';
 import { capitalize, getPokemonLabelColor } from '@/utils/helpers';
-import { onMounted } from 'vue';
 
 defineProps<{
   pokemon: IPokemon;
 }>();
-
-onMounted(() => {
-  console.log('mount pokemon card');
-});
 </script>
 
 <template>
@@ -23,6 +18,7 @@ onMounted(() => {
       :alt="`picture of ${pokemon.name}`"
       :src="pokemon.sprites.front_default"
       class="h-14 w-14 object-cover"
+      loading="lazy"
     />
 
     <div class="flex w-full items-start">

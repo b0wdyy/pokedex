@@ -4,14 +4,16 @@ import { usePokemon } from '@/composables/use-pokemon';
 import { ChevronLeftIcon } from '@heroicons/vue/solid';
 import { HeartIcon } from '@heroicons/vue/outline';
 import Container from '@/components/common/container.vue';
+import PokemonCard from '@/components/pokemon/card.vue';
 import PokemonDetailBox from '@/components/pokemon/detail-box.vue';
 import PokemonInfoLine from '@/components/pokemon/info-line.vue';
 import PokemonInfoLineStat from '@/components/pokemon/info-line-stat.vue';
 import ButtonPrimary from '@/components/common/button/primary.vue';
 import Tag from '@/components/common/tag.vue';
 import { capitalize, getPokemonLabelColor } from '@/utils/helpers';
-import { onBeforeUnmount, onMounted } from 'vue';
+import { onBeforeUnmount, onMounted, watch } from 'vue';
 import Loader from '@/components/common/loader.vue';
+import { usePokemonStore } from '@/stores/PokemonStore';
 
 onMounted(() => {
   document.body.style.background = '#7ECD8B';
@@ -21,7 +23,15 @@ onBeforeUnmount(() => {
   document.body.style.background = '';
 });
 
-const { params } = useRoute();
+const route = useRoute();
+const { fetchPokemonDetail } = usePokemonStore();
+watch(
+  () => route.params,
+  (newParams) => {
+    fetchPokemonDetail(+newParams.id);
+  },
+  { immediate: true }
+);
 const {
   pokemon,
   loading,
@@ -30,7 +40,7 @@ const {
   toggleTeamPokemon,
   isPokemonFavorite,
   isPokemonInTeam,
-} = usePokemon(Number(params.id));
+} = usePokemon();
 
 const onFavoriteClick = () => {
   toggleFavoritePokemon(pokemon.value);
@@ -138,9 +148,18 @@ const onAddToTeamClick = () => {
           </div>
         </PokemonDetailBox>
 
-        <PokemonDetailBox title="Evolutie">
-          <p>Hier komt evolutie</p>
-        </PokemonDetailBox>
+        <div v-if="evolutions.length">
+          <h4 class="mb-2 text-sm font-bold uppercase text-white">Evolutie</h4>
+
+          <div class="flex flex-col gap-2">
+            <PokemonCard
+              v-for="evolution in evolutions"
+              :key="evolution.id"
+              :class="{ 'bg-opacity-50': evolution.id !== pokemon.id }"
+              :pokemon="evolution"
+            />
+          </div>
+        </div>
       </section>
     </div>
 
