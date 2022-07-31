@@ -114,7 +114,7 @@ useGesture(
 </script>
 
 <template>
-  <div class="relative h-screen">
+  <div class="relative z-50 h-screen">
     <div class="fixed inset-0 bg-black bg-opacity-40" @click="onClose"></div>
 
     <div

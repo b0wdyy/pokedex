@@ -85,15 +85,14 @@ const onSortChangeClick = (value: SortTypes) => {
 
   <Loader :loading="loading" />
 
-  <div
-    v-if="!loading && filteredPokemonList.length"
-    class="mb-4 flex flex-col gap-4"
-  >
-    <PokemonCard
-      v-for="pokemon in filteredPokemonList"
-      :key="pokemon.id"
-      :pokemon="pokemon"
-    />
+  <div v-if="!loading && filteredPokemonList.length" class="mb-4">
+    <div class="flex flex-col gap-4">
+      <PokemonCard
+        v-for="pokemon in filteredPokemonList"
+        :key="pokemon.id"
+        :pokemon="pokemon"
+      />
+    </div>
 
     <transition name="fade">
       <DraggableModal
