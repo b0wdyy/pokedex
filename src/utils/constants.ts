@@ -61,3 +61,15 @@ export const SORT_VALUES = [
     value: 'NUM_DESC',
   },
 ];
+
+export const POKEMON_PAGE_COLORS = {
+  red: 'bg-gradient-to-br from-red-700 to-red-500',
+  blue: 'bg-gradient-to-br from-blue-700 to-blue-500',
+  green: 'bg-gradient-to-br from-green-700 to-green-500',
+  yellow: 'bg-gradient-to-br from-yellow-700 to-yellow-500',
+  purple: 'bg-gradient-to-br from-purple-700 to-purple-500',
+  brown: 'bg-gradient-to-br from-amber-700 to-amber-500',
+  white: 'bg-gradient-to-br from-cyan-700 to-cyan-500',
+  pink: 'bg-gradient-to-br from-pink-700 to-pink-500',
+  gray: 'bg-gradient-to-br from-slate-700 to-slate-500',
+};

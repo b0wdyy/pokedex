@@ -9,18 +9,10 @@ import PokemonInfoLineStat from '@/components/pokemon/info-line-stat.vue';
 import ButtonPrimary from '@/components/common/button/primary.vue';
 import Tag from '@/components/common/tag.vue';
 import { capitalize, getPokemonLabelColor } from '@/utils/helpers';
-import { onBeforeUnmount, onMounted } from 'vue';
 import { Swiper, SwiperSlide } from 'swiper/vue';
+import { POKEMON_PAGE_COLORS } from '@/utils/constants';
 import 'swiper/css';
 import BackButton from '@/components/common/back-button.vue';
-
-onMounted(() => {
-  document.body.style.background = '#7ECD8B';
-});
-
-onBeforeUnmount(() => {
-  document.body.style.background = '';
-});
 
 const {
   pokemon,
@@ -43,7 +35,11 @@ const onAddToTeamClick = () => {
 </script>
 
 <template>
-  <Container v-if="Object.keys(pokemon).length" class="py-4 pb-24 md:pb-0">
+  <Container
+    v-if="Object.keys(pokemon).length"
+    :class="POKEMON_PAGE_COLORS[pokemon.color]"
+    class="min-h-screen py-4 pb-24 md:pb-0"
+  >
     <header class="mb-3 flex items-center justify-between">
       <BackButton to="/" />
 

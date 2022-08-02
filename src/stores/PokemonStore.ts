@@ -1,6 +1,9 @@
 import { defineStore } from 'pinia';
 import { IPokemon } from '@/utils/interfaces/IPokemon';
-import { IPokemonDetail } from '@/utils/interfaces/IPokemonDetail';
+import {
+  IPokemonDetail,
+  IPokemonDetailWithColor,
+} from '@/utils/interfaces/IPokemonDetail';
 import {
   BASE_URL_DETAIL,
   BASE_URL_LIST,
@@ -77,7 +80,7 @@ const getEvolutionList = async (evolutionChain: IChain) => {
 
 export const usePokemonStore = defineStore('pokemon', {
   state: () => ({
-    pokemon: {} as IPokemonDetail,
+    pokemon: {} as IPokemonDetailWithColor,
     evolutions: [] as IPokemon[],
     pokemonList: [] as IPokemon[],
     favoritePokemonList: useLocalStorage<IPokemonDetail[]>(
@@ -118,7 +121,7 @@ export const usePokemonStore = defineStore('pokemon', {
         );
 
         this.evolutions = await getEvolutionList(evolutions.chain);
-        this.pokemon = pokemon;
+        this.pokemon = { ...pokemon, color: species.color.name };
       } catch (e) {
         console.error({ error: e });
       } finally {

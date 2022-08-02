@@ -109,3 +109,7 @@ export interface Type2 {
   name: PokemonTypes;
   url: string;
 }
+
+export interface IPokemonDetailWithColor extends IPokemonDetail {
+  color: string;
+}
