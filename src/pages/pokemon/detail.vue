@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-import { useRoute } from 'vue-router';
 import { usePokemon } from '@/composables/use-pokemon';
-import { ChevronLeftIcon } from '@heroicons/vue/solid';
 import { HeartIcon } from '@heroicons/vue/outline';
 import Container from '@/components/common/container.vue';
 import PokemonCard from '@/components/pokemon/card.vue';
@@ -11,9 +9,10 @@ import PokemonInfoLineStat from '@/components/pokemon/info-line-stat.vue';
 import ButtonPrimary from '@/components/common/button/primary.vue';
 import Tag from '@/components/common/tag.vue';
 import { capitalize, getPokemonLabelColor } from '@/utils/helpers';
-import { onBeforeUnmount, onMounted, watch } from 'vue';
-import Loader from '@/components/common/loader.vue';
-import { usePokemonStore } from '@/stores/PokemonStore';
+import { onBeforeUnmount, onMounted } from 'vue';
+import { Swiper, SwiperSlide } from 'swiper/vue';
+import 'swiper/css';
+import BackButton from '@/components/common/back-button.vue';
 
 onMounted(() => {
   document.body.style.background = '#7ECD8B';
@@ -23,18 +22,8 @@ onBeforeUnmount(() => {
   document.body.style.background = '';
 });
 
-const route = useRoute();
-const { fetchPokemonDetail } = usePokemonStore();
-watch(
-  () => route.params,
-  (newParams) => {
-    fetchPokemonDetail(+newParams.id);
-  },
-  { immediate: true }
-);
 const {
   pokemon,
-  loading,
   evolutions,
   toggleFavoritePokemon,
   toggleTeamPokemon,
@@ -54,16 +43,9 @@ const onAddToTeamClick = () => {
 </script>
 
 <template>
-  <div v-if="loading" class="p-4">
-    <Loader :loading="loading" />
-  </div>
-
-  <Container v-else-if="Object.keys(pokemon).length" class="py-4 pb-24">
+  <Container v-if="Object.keys(pokemon).length" class="py-4 pb-24 md:pb-0">
     <header class="mb-3 flex items-center justify-between">
-      <router-link :to="{ name: 'home' }" class="flex items-center">
-        <ChevronLeftIcon class="h-8 w-8 text-white" />
-        <p class="text-white">Terug</p>
-      </router-link>
+      <BackButton to="/" />
 
       <HeartIcon
         :class="{ 'fill-white': isPokemonFavorite(pokemon) }"
@@ -77,29 +59,20 @@ const onAddToTeamClick = () => {
         {{ capitalize(pokemon.name) }}
       </h1>
 
-      <section
-        class="relative flex w-full snap-x snap-mandatory gap-6 overflow-x-auto"
-      >
-        <img
-          :alt="`front of ${pokemon.name}`"
-          :src="pokemon.sprites.front_default"
-          class="w-80 shrink-0 snap-center"
-        />
-        <img
-          :alt="`back of ${pokemon.name}`"
-          :src="pokemon.sprites.back_default"
-          class="w-80 shrink-0 snap-center"
-        />
-        <img
-          :alt="`front shiny of ${pokemon.name}`"
-          :src="pokemon.sprites.front_shiny"
-          class="w-80 shrink-0 snap-center"
-        />
-        <img
-          :alt="`back shiny of ${pokemon.name}`"
-          :src="pokemon.sprites.back_shiny"
-          class="w-80 shrink-0 snap-center"
-        />
+      <section class="relative">
+        <Swiper :edge-swipe-threshold="80" :grab-cursor="true">
+          <SwiperSlide
+            v-for="img in [
+              pokemon.sprites.front_default,
+              pokemon.sprites.back_default,
+              pokemon.sprites.front_shiny,
+              pokemon.sprites.back_shiny,
+            ]"
+            :key="img"
+          >
+            <img :src="img" alt="alt" class="w-full" />
+          </SwiperSlide>
+        </Swiper>
       </section>
 
       <section class="space-y-7">
@@ -151,7 +124,7 @@ const onAddToTeamClick = () => {
         <div v-if="evolutions.length">
           <h4 class="mb-2 text-sm font-bold uppercase text-white">Evolutie</h4>
 
-          <div class="flex flex-col gap-2">
+          <div class="flex flex-col gap-2.5">
             <PokemonCard
               v-for="evolution in evolutions"
               :key="evolution.id"
@@ -164,7 +137,7 @@ const onAddToTeamClick = () => {
     </div>
 
     <ButtonPrimary
-      class="fixed inset-x-4 bottom-8 w-auto"
+      class="fixed inset-x-4 bottom-8 w-auto md:static md:my-8 md:w-full"
       @click="onAddToTeamClick"
       >{{ isPokemonInTeam(pokemon) ? 'Verwijderen van' : 'Toevoegen aan' }} mijn
       team</ButtonPrimary

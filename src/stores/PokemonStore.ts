@@ -1,11 +1,17 @@
 import { defineStore } from 'pinia';
 import { IPokemon } from '@/utils/interfaces/IPokemon';
 import { IPokemonDetail } from '@/utils/interfaces/IPokemonDetail';
-import { BASE_URL_DETAIL, BASE_URL_LIST } from '@/utils/constants';
+import {
+  BASE_URL_DETAIL,
+  BASE_URL_LIST,
+  POKEMON_FAVORITE_LIST_KEY,
+  POKEMON_TEAM_LIST_KEY,
+} from '@/utils/constants';
 import axios from 'axios';
 import { useRoute } from 'vue-router';
 import { SortTypes } from '@/utils/types/SortTypes';
 import { IChain } from '@/utils/interfaces/IEvolutionChain';
+import { useLocalStorage } from '@vueuse/core';
 
 const togglePokemonInList = (
   arrayElement: IPokemonDetail[],
@@ -74,8 +80,14 @@ export const usePokemonStore = defineStore('pokemon', {
     pokemon: {} as IPokemonDetail,
     evolutions: [] as IPokemon[],
     pokemonList: [] as IPokemon[],
-    favoritePokemonList: [] as IPokemonDetail[],
-    teamPokemonList: [] as IPokemonDetail[],
+    favoritePokemonList: useLocalStorage<IPokemonDetail[]>(
+      POKEMON_FAVORITE_LIST_KEY,
+      []
+    ),
+    teamPokemonList: useLocalStorage<IPokemonDetail[]>(
+      POKEMON_TEAM_LIST_KEY,
+      []
+    ),
     loading: false,
   }),
 

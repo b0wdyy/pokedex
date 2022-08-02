@@ -6,7 +6,7 @@ defineProps<{ loading: boolean }>();
   <transition name="fade">
     <div
       v-if="loading"
-      class="absolute left-1/2 mt-4 flex flex-col items-center justify-center"
+      class="fixed z-40 flex h-screen w-screen flex-col items-center justify-center bg-white"
     >
       <div class="relative grid place-items-center">
         <div

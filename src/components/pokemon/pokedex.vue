@@ -4,7 +4,6 @@ import PokemonGroupLink from '@/components/pokemon/group-link.vue';
 import PokemonCard from '@/components/pokemon/card.vue';
 import Title from '@/components/common/text/title.vue';
 import Input from '@/components/form/input.vue';
-import Loader from '@/components/common/loader.vue';
 import { useRoute, useRouter } from 'vue-router';
 import debounce from 'lodash.debounce';
 import { usePokemon } from '@/composables/use-pokemon';
@@ -83,10 +82,8 @@ const onSortChangeClick = (value: SortTypes) => {
     />
   </div>
 
-  <Loader :loading="loading" />
-
-  <div v-if="!loading && filteredPokemonList.length" class="mb-4">
-    <div class="flex flex-col gap-4">
+  <div v-if="filteredPokemonList.length" class="mb-4">
+    <div class="flex flex-col gap-2.5">
       <PokemonCard
         v-for="pokemon in filteredPokemonList"
         :key="pokemon.id"

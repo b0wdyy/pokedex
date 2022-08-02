@@ -17,7 +17,7 @@ defineProps<{
     <img
       :alt="`picture of ${pokemon.name}`"
       :src="pokemon.sprites.front_default"
-      class="h-14 w-14 object-cover"
+      class="mr-4 h-14 w-14 object-cover"
       loading="lazy"
     />
 
@@ -49,6 +49,6 @@ defineProps<{
 <style>
 .card {
   @apply rounded-lg px-4 py-2;
-  box-shadow: 0 15px 15px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 15px 15px rgba(0, 0, 0, 0.05);
 }
 </style>
