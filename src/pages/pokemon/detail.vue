@@ -5,14 +5,28 @@ import Container from '@/components/common/container.vue';
 import PokemonCard from '@/components/pokemon/card.vue';
 import PokemonDetailBox from '@/components/pokemon/detail-box.vue';
 import PokemonInfoLine from '@/components/pokemon/info-line.vue';
-import PokemonInfoLineStat from '@/components/pokemon/info-line-stat.vue';
 import ButtonPrimary from '@/components/common/button/primary.vue';
 import Tag from '@/components/common/tag.vue';
-import { capitalize, getPokemonLabelColor } from '@/utils/helpers';
+import {
+  capitalize,
+  getPokemonLabelColor,
+  getPokemonStatTranslation,
+} from '@/utils/helpers';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import { POKEMON_PAGE_COLORS } from '@/utils/constants';
 import 'swiper/css';
 import BackButton from '@/components/common/back-button.vue';
+
+const CHART_OPTIONS = {
+  chart: {
+    toolbar: {
+      show: false,
+    },
+  },
+  yaxis: {
+    show: false,
+  },
+};
 
 const {
   pokemon,
@@ -107,13 +121,25 @@ const onAddToTeamClick = () => {
         </PokemonDetailBox>
 
         <PokemonDetailBox title="Statistieken">
-          <div class="flex flex-col gap-2">
-            <PokemonInfoLineStat
-              v-for="stat in pokemon.stats"
-              :key="stat.stat.name"
-              :stat="stat.base_stat"
-              :value-key="stat.stat.name"
-            />
+          <div class="flex items-center justify-center">
+            <apexchart
+              :options="{
+                ...CHART_OPTIONS,
+                xaxis: {
+                  categories: pokemon.stats.map((stat) =>
+                    getPokemonStatTranslation(stat.stat.name)
+                  ),
+                },
+              }"
+              :series="[
+                {
+                  name: 'Stats',
+                  data: pokemon.stats.map((stat) => stat.base_stat),
+                },
+              ]"
+              type="radar"
+              width="500"
+            ></apexchart>
           </div>
         </PokemonDetailBox>
 

@@ -13,13 +13,15 @@
     "@vueuse/core": "^9.0.2",
     "@vueuse/gesture": "^2.0.0-beta.1",
     "@vueuse/motion": "^2.0.0-beta.12",
+    "apexcharts": "^3.35.4",
     "axios": "^0.27.2",
     "lodash.debounce": "^4.0.8",
     "pinia": "^2.0.17",
     "swiper": "^8.3.2",
     "vue": "^3.2.37",
     "vue-router": "4",
-    "vue-virtual-scroller": "^2.0.0-alpha.1"
+    "vue-virtual-scroller": "^2.0.0-alpha.1",
+    "vue3-apexcharts": "^1.4.1"
   },
   "devDependencies": {
     "@eslint/create-config": "^0.3.0",

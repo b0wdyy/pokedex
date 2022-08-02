@@ -1,4 +1,5 @@
 import { PokemonTypes } from '@/utils/types/PokemonTypes';
+import { STATS_TRANSLATION_KEYS } from '@/utils/constants';
 
 export interface IPokemonDetail {
   abilities: Ability[];
@@ -96,7 +97,7 @@ export interface Stat {
 }
 
 export interface Stat2 {
-  name: string;
+  name: keyof typeof STATS_TRANSLATION_KEYS;
   url: string;
 }
 
