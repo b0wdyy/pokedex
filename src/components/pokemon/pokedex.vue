@@ -8,23 +8,32 @@ import { useRoute, useRouter } from 'vue-router';
 import debounce from 'lodash.debounce';
 import { usePokemon } from '@/composables/use-pokemon';
 import DraggableModal from '@/components/modal/draggable-modal.vue';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { SORT_VALUES } from '@/utils/constants';
 import { SortTypes } from '@/utils/types/SortTypes';
 import { CheckIcon } from '@heroicons/vue/solid';
 
-const { query } = useRoute();
+const route = useRoute();
 const { replace } = useRouter();
-const { filteredPokemonList, loading, favoritesLength, teamLength } =
-  usePokemon();
+const { filteredPokemonList, favoritesLength, teamLength } = usePokemon();
 
 const sortModalOpen = ref(false);
-const sort = ref(query.sort ?? '');
+const sort = ref(route.query.sort ?? '');
+
+watch(
+  () => route.query,
+  (newValue) => {
+    sort.value = newValue.sort as string;
+  },
+  {
+    deep: true,
+  }
+);
 
 const onChange = debounce(async (value: string) => {
   await replace({
     query: {
-      ...query,
+      ...route.query,
       q: value || undefined,
     },
   });
@@ -43,7 +52,7 @@ const onSortChangeClick = (value: SortTypes) => {
 
   replace({
     query: {
-      ...query,
+      ...route.query,
       sort: value,
     },
   });
@@ -60,7 +69,7 @@ const onSortChangeClick = (value: SortTypes) => {
     <Title class="mb-2" color="text-black" type="h1">Pokédex</Title>
     <Input
       :icon-left="svg.search"
-      :value="query.q || ''"
+      :value="route.query.q || ''"
       placeholder="Pokemon zoeken"
       type="text"
       @onInputChange="onChange"
