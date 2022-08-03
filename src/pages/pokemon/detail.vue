@@ -65,7 +65,10 @@ const onAddToTeamClick = () => {
     </header>
 
     <div>
-      <h1 v-if="pokemon.name" class="mb-4 text-3xl font-bold text-white">
+      <h1
+        v-if="pokemon.name"
+        class="mb-4 text-3xl font-bold text-white md:mb-0"
+      >
         {{ capitalize(pokemon.name) }}
       </h1>
 
