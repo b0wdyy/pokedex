@@ -72,7 +72,7 @@ const onAddToTeamClick = () => {
         {{ capitalize(pokemon.name) }}
       </h1>
 
-      <div class="grid grid-cols-2 gap-12">
+      <div class="gap-12 md:grid md:grid-cols-2">
         <div>
           <section class="relative">
             <Swiper :edge-swipe-threshold="80" :grab-cursor="true">
